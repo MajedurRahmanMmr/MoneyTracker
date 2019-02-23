@@ -1,0 +1,4 @@
+#Sat Feb 23 06:58:07 BDT 2019
+base.0=G\:\\MoneyTracker\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\9
+path.0=classes.dex
+renamed.0=classes.dex
