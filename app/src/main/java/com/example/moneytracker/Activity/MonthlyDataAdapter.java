@@ -186,6 +186,8 @@ class MonthlyDataAdapter extends RecyclerView.Adapter<MonthlyDataAdapter.ViewHol
                             dialog.dismiss();
                         }
                     });
+                }else {
+                    Toast.makeText(context, "You can change only running month data!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
