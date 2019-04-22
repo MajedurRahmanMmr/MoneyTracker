@@ -14,21 +14,21 @@ public interface SpendDAO {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertMonthlyData(Salary data);
+    void insertMonthlyData(Spend data);
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAllMonthlyData(ArrayList<Salary> data);
+    void insertAllMonthlyData(ArrayList<Spend> data);
 
-    @Query("select * from salary ")
-    List<Salary> getMonthlyDataById();
-
-
-    @Query("select * from salary ")
-    List<Salary> getAllMonthlyData();
+    @Query("select * from spend ")
+    List<Spend> getMonthlyDataById();
 
 
-    @Query("select * from salary ")
-    LiveData<List<Salary>> getAllMonthlyDataLive();
+    @Query("select * from spend ")
+    List<Spend> getAllMonthlyData();
+
+
+    @Query("select * from spend ")
+    LiveData<List<Spend>> getAllMonthlyDataLive();
 }
 

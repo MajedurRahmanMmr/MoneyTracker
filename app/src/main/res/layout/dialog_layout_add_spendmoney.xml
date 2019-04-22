@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingTop="10dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="10dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Please Provide Individual Amount"
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:alpha=".8"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:background="#97C9C9C9" />
+
+    <EditText
+        android:id="@+id/shopping_amount"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_bg_gray"
+        android:gravity="center"
+        android:hint="Shopping "
+        android:inputType="number"
+        android:maxLength="9"
+        android:maxLines="1"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/food_amount"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_bg_gray"
+        android:gravity="center"
+        android:hint="Food"
+        android:inputType="number"
+        android:maxLength="9"
+        android:maxLines="1"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+
+    <EditText
+        android:id="@+id/other_amount"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_bg_gray"
+        android:gravity="center"
+        android:hint="Other"
+        android:inputType="number"
+        android:maxLength="9"
+        android:maxLines="1"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_round_red_bg"
+            android:text="Cancel"
+            android:textColor="#fff" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/button_round_bg"
+            android:text="Save"
+            android:textColor="#FFF" />
+    </LinearLayout>
+
+</LinearLayout>

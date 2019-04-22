@@ -1,5 +1,6 @@
 package com.example.moneytracker.Activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,16 +50,17 @@ class MonthlyDataAdapter extends RecyclerView.Adapter<MonthlyDataAdapter.ViewHol
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
 
 
-        viewHolder.nameMonth.setText(data.get(i).getMonthName());
+        final MonthlyData currentMonthData = data.get(i);
+        viewHolder.nameMonth.setText(currentMonthData.getMonthName());
 
         final int month = Calendar.getInstance().get(Calendar.MONTH);
 
-        if (month == data.get(i).getMonthId() - 1) {
+        if (month == currentMonthData.getMonthId() - 1) {
             viewHolder.statusMonth.setText("Running");
             viewHolder.statusMonth.setTextColor(Color.parseColor("#FFE53935"));
             viewHolder.cardViewMonth.setCardBackgroundColor(Color.parseColor("#ffeb3b"));
 
-        } else if (month > data.get(i).getMonthId() - 1) {
+        } else if (month > currentMonthData.getMonthId() - 1) {
             viewHolder.statusMonth.setText("Already Past");
             viewHolder.statusMonth.setTextColor(Color.parseColor("#bababa"));
             viewHolder.cardViewMonth.setCardBackgroundColor(Color.parseColor("#FFFFFFFF"));
@@ -69,7 +72,7 @@ class MonthlyDataAdapter extends RecyclerView.Adapter<MonthlyDataAdapter.ViewHol
 
         }
 
-        if (month >= data.get(i).getMonthId() - 1) {
+        if (month >= currentMonthData.getMonthId() - 1) {
 
 
             if (salaries.size() != 0) {
@@ -78,11 +81,11 @@ class MonthlyDataAdapter extends RecyclerView.Adapter<MonthlyDataAdapter.ViewHol
 
                 if (salary != null && salary.getSalaryAmount() > 0) {
                     try {
-                        int availableAmount = salary.getSalaryAmount() - data.get(i).getMonthlySpend();
-                        int alreadySpend = data.get(i).getMonthlySpend();
+                        int availableAmount = salary.getSalaryAmount() - currentMonthData.getMonthlySpend();
+                        int alreadySpend = currentMonthData.getMonthlySpend();
                         int remaining = salary.getSalaryAmount() - alreadySpend;
 
-                        viewHolder.available.setText(String.format("%d", availableAmount));
+                        viewHolder.available.setText(String.format("%d", salary.getSalaryAmount()));
                         viewHolder.remaining.setText(String.format("%d", remaining));
                         viewHolder.alreadySpend.setText(String.format("%d", alreadySpend));
                     } catch (Exception e) {
@@ -102,10 +105,87 @@ class MonthlyDataAdapter extends RecyclerView.Adapter<MonthlyDataAdapter.ViewHol
         viewHolder.cardViewMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (month == data.get(i).getMonthId() - 1) {
+                if (month == currentMonthData.getMonthId() - 1) {
+                    // Toast.makeText(context, "Running", Toast.LENGTH_SHORT).show();
+
+                    final Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dialog_layout_add_spendmoney);
+                    dialog.setCancelable(false);
+                    dialog.show();
 
 
-                    Toast.makeText(context, "Running", Toast.LENGTH_SHORT).show();
+                    final EditText shoppingET, foodET, OtherET;
+
+                    shoppingET = dialog.findViewById(R.id.shopping_amount);
+                    foodET = dialog.findViewById(R.id.food_amount);
+                    OtherET = dialog.findViewById(R.id.other_amount);
+
+
+                    dialog.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+
+                            String shopping = shoppingET.getText().toString();
+                            String food = foodET.getText().toString();
+                            String other = OtherET.getText().toString();
+
+
+                            int shoppingAmmount = 0, foodAmmount = 0, otherAmmount = 0;
+
+                            if (!shopping.isEmpty()) {
+                                shoppingAmmount = Integer.parseInt(shopping);
+                            }
+                            if (!food.isEmpty()) {
+                                foodAmmount = Integer.parseInt(food);
+                            }
+                            if (!other.isEmpty()) {
+                                otherAmmount = Integer.parseInt(other);
+                            }
+
+                            int totalAmmount = shoppingAmmount + foodAmmount + otherAmmount;
+
+                            MonthlyData monthlyDataById = database.wordDao().getMonthlyDataById(currentMonthData.getMonthId());
+
+
+                            Salary salary = salaries.get(0);
+
+                            if (salary != null && salary.getSalaryAmount() > 0) {
+                                try {
+                                    int alreadySpend = currentMonthData.getMonthlySpend();
+
+
+                                    currentMonthData.setMonthlyIncome(salary.getSalaryAmount());
+                                    int monthlySpend = alreadySpend + totalAmmount;
+
+                                    if (monthlySpend > salary.getSalaryAmount()) {
+
+                                        Toast.makeText(context, "Spend amount can't be grater then salary amount", Toast.LENGTH_SHORT).show();
+                                        return;
+
+                                    }
+
+                                    currentMonthData.setMonthlySpend(monthlySpend);
+                                    database.wordDao().insertMonthlyData(currentMonthData);
+                                    dialog.dismiss();
+
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                        }
+                    });
+
+
+                    dialog.findViewById(R.id.cancel_button).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
                 }
             }
         });

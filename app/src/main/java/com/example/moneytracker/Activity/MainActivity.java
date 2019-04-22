@@ -4,15 +4,16 @@ import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moneytracker.Database.MonthlyData;
 import com.example.moneytracker.Database.MonthlyDataViewModel;
@@ -96,13 +97,21 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!amount.isEmpty()) {
 
-                    int actual_amount = Integer.parseInt(amount);
+                    try {
+                        int actual_amount = Integer.parseInt(amount);
 
-                    Salary salary = new Salary();
-                    salary.setSalaryAmount(actual_amount);
-                    db.salaryDAO().insertMonthlyData(salary);
-                    dialog.dismiss();
-                    adapter.notifyData();
+                        Salary salary = new Salary();
+                        salary.setSalaryAmount(actual_amount);
+                        db.salaryDAO().insertMonthlyData(salary);
+                        dialog.dismiss();
+                        adapter.notifyData();
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(MainActivity.this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
 
                 }
 

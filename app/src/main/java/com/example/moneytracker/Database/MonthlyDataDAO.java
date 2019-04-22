@@ -21,7 +21,7 @@ public interface MonthlyDataDAO {
     void insertAllMonthlyData(ArrayList<MonthlyData> data);
 
     @Query("select * from monthlydata where monthId=:monthId")
-    List<MonthlyData> getMonthlyDataById(int monthId);
+    MonthlyData getMonthlyDataById(int monthId);
 
 
     @Query("select * from monthlydata ")
