@@ -29,14 +29,15 @@ public class RoomDataBase_Impl extends RoomDataBase {
 
   @Override
   protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration configuration) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(4) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(5) {
       @Override
       public void createAllTables(SupportSQLiteDatabase _db) {
         _db.execSQL("CREATE TABLE IF NOT EXISTS `MonthlyData` (`monthId` INTEGER NOT NULL, `monthName` TEXT, `monthlyIncome` INTEGER NOT NULL, `monthlySpend` INTEGER NOT NULL, PRIMARY KEY(`monthId`))");
         _db.execSQL("CREATE TABLE IF NOT EXISTS `Salary` (`id` INTEGER NOT NULL, `salaryAmount` INTEGER NOT NULL, `updatedTime` INTEGER NOT NULL, PRIMARY KEY(`id`))");
         _db.execSQL("CREATE TABLE IF NOT EXISTS `Spend` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `monthId` INTEGER NOT NULL, `spendAmount` INTEGER NOT NULL, `time` INTEGER NOT NULL)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `DailySpendDM` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `month` INTEGER NOT NULL, `amount` INTEGER NOT NULL, `type` INTEGER NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"58fb01e83904d825cd6d1f00b594f202\")");
+        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"99cf83045f2a07bc6d7734e45c1c2784\")");
       }
 
       @Override
@@ -44,6 +45,7 @@ public class RoomDataBase_Impl extends RoomDataBase {
         _db.execSQL("DROP TABLE IF EXISTS `MonthlyData`");
         _db.execSQL("DROP TABLE IF EXISTS `Salary`");
         _db.execSQL("DROP TABLE IF EXISTS `Spend`");
+        _db.execSQL("DROP TABLE IF EXISTS `DailySpendDM`");
       }
 
       @Override
@@ -109,8 +111,23 @@ public class RoomDataBase_Impl extends RoomDataBase {
                   + " Expected:\n" + _infoSpend + "\n"
                   + " Found:\n" + _existingSpend);
         }
+        final HashMap<String, TableInfo.Column> _columnsDailySpendDM = new HashMap<String, TableInfo.Column>(5);
+        _columnsDailySpendDM.put("id", new TableInfo.Column("id", "INTEGER", true, 1));
+        _columnsDailySpendDM.put("date", new TableInfo.Column("date", "INTEGER", true, 0));
+        _columnsDailySpendDM.put("month", new TableInfo.Column("month", "INTEGER", true, 0));
+        _columnsDailySpendDM.put("amount", new TableInfo.Column("amount", "INTEGER", true, 0));
+        _columnsDailySpendDM.put("type", new TableInfo.Column("type", "INTEGER", true, 0));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysDailySpendDM = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesDailySpendDM = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoDailySpendDM = new TableInfo("DailySpendDM", _columnsDailySpendDM, _foreignKeysDailySpendDM, _indicesDailySpendDM);
+        final TableInfo _existingDailySpendDM = TableInfo.read(_db, "DailySpendDM");
+        if (! _infoDailySpendDM.equals(_existingDailySpendDM)) {
+          throw new IllegalStateException("Migration didn't properly handle DailySpendDM(com.example.moneytracker.Database.DailySpendDM).\n"
+                  + " Expected:\n" + _infoDailySpendDM + "\n"
+                  + " Found:\n" + _existingDailySpendDM);
+        }
       }
-    }, "58fb01e83904d825cd6d1f00b594f202", "7fd9d0ba1c7a42269c75c658d3c701e9");
+    }, "99cf83045f2a07bc6d7734e45c1c2784", "20944dd647dcce6c05df7ca6d79e728b");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
         .name(configuration.name)
         .callback(_openCallback)
@@ -121,7 +138,7 @@ public class RoomDataBase_Impl extends RoomDataBase {
 
   @Override
   protected InvalidationTracker createInvalidationTracker() {
-    return new InvalidationTracker(this, "MonthlyData","Salary","Spend");
+    return new InvalidationTracker(this, "MonthlyData","Salary","Spend","DailySpendDM");
   }
 
   @Override
@@ -133,6 +150,7 @@ public class RoomDataBase_Impl extends RoomDataBase {
       _db.execSQL("DELETE FROM `MonthlyData`");
       _db.execSQL("DELETE FROM `Salary`");
       _db.execSQL("DELETE FROM `Spend`");
+      _db.execSQL("DELETE FROM `DailySpendDM`");
       super.setTransactionSuccessful();
     } finally {
       super.endTransaction();
@@ -144,7 +162,7 @@ public class RoomDataBase_Impl extends RoomDataBase {
   }
 
   @Override
-  public MonthlyDataDAO wordDao() {
+  public MonthlyDataDAO monthlyDataDAO() {
     if (_monthlyDataDAO != null) {
       return _monthlyDataDAO;
     } else {

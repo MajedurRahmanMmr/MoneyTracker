@@ -9,10 +9,10 @@ import android.content.Context;
 import javax.xml.parsers.SAXParser;
 
 
-@Database(entities = {MonthlyData.class , Salary.class , Spend.class}, version = 4)
+@Database(entities = {MonthlyData.class , Salary.class , Spend.class , DailySpendDM.class}, version = 5)
 public abstract class RoomDataBase extends RoomDatabase {
 
-    public abstract MonthlyDataDAO wordDao();
+    public abstract MonthlyDataDAO monthlyDataDAO();
     public abstract SalaryDAO salaryDAO();
     public abstract SpendDAO spendDAO();
 

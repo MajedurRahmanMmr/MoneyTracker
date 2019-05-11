@@ -20,30 +20,31 @@ import java.util.Set;
 public class SpendDAO_Impl implements SpendDAO {
   private final RoomDatabase __db;
 
-  private final EntityInsertionAdapter __insertionAdapterOfSalary;
+  private final EntityInsertionAdapter __insertionAdapterOfSpend;
 
   public SpendDAO_Impl(RoomDatabase __db) {
     this.__db = __db;
-    this.__insertionAdapterOfSalary = new EntityInsertionAdapter<Salary>(__db) {
+    this.__insertionAdapterOfSpend = new EntityInsertionAdapter<Spend>(__db) {
       @Override
       public String createQuery() {
-        return "INSERT OR REPLACE INTO `Salary`(`id`,`salaryAmount`,`updatedTime`) VALUES (?,?,?)";
+        return "INSERT OR REPLACE INTO `Spend`(`id`,`monthId`,`spendAmount`,`time`) VALUES (nullif(?, 0),?,?,?)";
       }
 
       @Override
-      public void bind(SupportSQLiteStatement stmt, Salary value) {
+      public void bind(SupportSQLiteStatement stmt, Spend value) {
         stmt.bindLong(1, value.getId());
-        stmt.bindLong(2, value.getSalaryAmount());
-        stmt.bindLong(3, value.getUpdatedTime());
+        stmt.bindLong(2, value.getMonthId());
+        stmt.bindLong(3, value.getSpendAmount());
+        stmt.bindLong(4, value.getTime());
       }
     };
   }
 
   @Override
-  public void insertMonthlyData(Salary data) {
+  public void insertMonthlyData(Spend data) {
     __db.beginTransaction();
     try {
-      __insertionAdapterOfSalary.insert(data);
+      __insertionAdapterOfSpend.insert(data);
       __db.setTransactionSuccessful();
     } finally {
       __db.endTransaction();
@@ -51,10 +52,10 @@ public class SpendDAO_Impl implements SpendDAO {
   }
 
   @Override
-  public void insertAllMonthlyData(ArrayList<Salary> data) {
+  public void insertAllMonthlyData(ArrayList<Spend> data) {
     __db.beginTransaction();
     try {
-      __insertionAdapterOfSalary.insert(data);
+      __insertionAdapterOfSpend.insert(data);
       __db.setTransactionSuccessful();
     } finally {
       __db.endTransaction();
@@ -62,27 +63,31 @@ public class SpendDAO_Impl implements SpendDAO {
   }
 
   @Override
-  public List<Salary> getMonthlyDataById() {
-    final String _sql = "select * from salary ";
+  public List<Spend> getMonthlyDataById() {
+    final String _sql = "select * from spend ";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     final Cursor _cursor = __db.query(_statement);
     try {
       final int _cursorIndexOfId = _cursor.getColumnIndexOrThrow("id");
-      final int _cursorIndexOfSalaryAmount = _cursor.getColumnIndexOrThrow("salaryAmount");
-      final int _cursorIndexOfUpdatedTime = _cursor.getColumnIndexOrThrow("updatedTime");
-      final List<Salary> _result = new ArrayList<Salary>(_cursor.getCount());
+      final int _cursorIndexOfMonthId = _cursor.getColumnIndexOrThrow("monthId");
+      final int _cursorIndexOfSpendAmount = _cursor.getColumnIndexOrThrow("spendAmount");
+      final int _cursorIndexOfTime = _cursor.getColumnIndexOrThrow("time");
+      final List<Spend> _result = new ArrayList<Spend>(_cursor.getCount());
       while(_cursor.moveToNext()) {
-        final Salary _item;
-        _item = new Salary();
+        final Spend _item;
+        _item = new Spend();
         final int _tmpId;
         _tmpId = _cursor.getInt(_cursorIndexOfId);
         _item.setId(_tmpId);
-        final int _tmpSalaryAmount;
-        _tmpSalaryAmount = _cursor.getInt(_cursorIndexOfSalaryAmount);
-        _item.setSalaryAmount(_tmpSalaryAmount);
-        final long _tmpUpdatedTime;
-        _tmpUpdatedTime = _cursor.getLong(_cursorIndexOfUpdatedTime);
-        _item.setUpdatedTime(_tmpUpdatedTime);
+        final int _tmpMonthId;
+        _tmpMonthId = _cursor.getInt(_cursorIndexOfMonthId);
+        _item.setMonthId(_tmpMonthId);
+        final int _tmpSpendAmount;
+        _tmpSpendAmount = _cursor.getInt(_cursorIndexOfSpendAmount);
+        _item.setSpendAmount(_tmpSpendAmount);
+        final long _tmpTime;
+        _tmpTime = _cursor.getLong(_cursorIndexOfTime);
+        _item.setTime(_tmpTime);
         _result.add(_item);
       }
       return _result;
@@ -93,27 +98,31 @@ public class SpendDAO_Impl implements SpendDAO {
   }
 
   @Override
-  public List<Salary> getAllMonthlyData() {
-    final String _sql = "select * from salary ";
+  public List<Spend> getAllMonthlyData() {
+    final String _sql = "select * from spend ";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     final Cursor _cursor = __db.query(_statement);
     try {
       final int _cursorIndexOfId = _cursor.getColumnIndexOrThrow("id");
-      final int _cursorIndexOfSalaryAmount = _cursor.getColumnIndexOrThrow("salaryAmount");
-      final int _cursorIndexOfUpdatedTime = _cursor.getColumnIndexOrThrow("updatedTime");
-      final List<Salary> _result = new ArrayList<Salary>(_cursor.getCount());
+      final int _cursorIndexOfMonthId = _cursor.getColumnIndexOrThrow("monthId");
+      final int _cursorIndexOfSpendAmount = _cursor.getColumnIndexOrThrow("spendAmount");
+      final int _cursorIndexOfTime = _cursor.getColumnIndexOrThrow("time");
+      final List<Spend> _result = new ArrayList<Spend>(_cursor.getCount());
       while(_cursor.moveToNext()) {
-        final Salary _item;
-        _item = new Salary();
+        final Spend _item;
+        _item = new Spend();
         final int _tmpId;
         _tmpId = _cursor.getInt(_cursorIndexOfId);
         _item.setId(_tmpId);
-        final int _tmpSalaryAmount;
-        _tmpSalaryAmount = _cursor.getInt(_cursorIndexOfSalaryAmount);
-        _item.setSalaryAmount(_tmpSalaryAmount);
-        final long _tmpUpdatedTime;
-        _tmpUpdatedTime = _cursor.getLong(_cursorIndexOfUpdatedTime);
-        _item.setUpdatedTime(_tmpUpdatedTime);
+        final int _tmpMonthId;
+        _tmpMonthId = _cursor.getInt(_cursorIndexOfMonthId);
+        _item.setMonthId(_tmpMonthId);
+        final int _tmpSpendAmount;
+        _tmpSpendAmount = _cursor.getInt(_cursorIndexOfSpendAmount);
+        _item.setSpendAmount(_tmpSpendAmount);
+        final long _tmpTime;
+        _tmpTime = _cursor.getLong(_cursorIndexOfTime);
+        _item.setTime(_tmpTime);
         _result.add(_item);
       }
       return _result;
@@ -124,16 +133,16 @@ public class SpendDAO_Impl implements SpendDAO {
   }
 
   @Override
-  public LiveData<List<Salary>> getAllMonthlyDataLive() {
-    final String _sql = "select * from salary ";
+  public LiveData<List<Spend>> getAllMonthlyDataLive() {
+    final String _sql = "select * from spend ";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
-    return new ComputableLiveData<List<Salary>>() {
+    return new ComputableLiveData<List<Spend>>() {
       private Observer _observer;
 
       @Override
-      protected List<Salary> compute() {
+      protected List<Spend> compute() {
         if (_observer == null) {
-          _observer = new Observer("salary") {
+          _observer = new Observer("spend") {
             @Override
             public void onInvalidated(@NonNull Set<String> tables) {
               invalidate();
@@ -144,21 +153,25 @@ public class SpendDAO_Impl implements SpendDAO {
         final Cursor _cursor = __db.query(_statement);
         try {
           final int _cursorIndexOfId = _cursor.getColumnIndexOrThrow("id");
-          final int _cursorIndexOfSalaryAmount = _cursor.getColumnIndexOrThrow("salaryAmount");
-          final int _cursorIndexOfUpdatedTime = _cursor.getColumnIndexOrThrow("updatedTime");
-          final List<Salary> _result = new ArrayList<Salary>(_cursor.getCount());
+          final int _cursorIndexOfMonthId = _cursor.getColumnIndexOrThrow("monthId");
+          final int _cursorIndexOfSpendAmount = _cursor.getColumnIndexOrThrow("spendAmount");
+          final int _cursorIndexOfTime = _cursor.getColumnIndexOrThrow("time");
+          final List<Spend> _result = new ArrayList<Spend>(_cursor.getCount());
           while(_cursor.moveToNext()) {
-            final Salary _item;
-            _item = new Salary();
+            final Spend _item;
+            _item = new Spend();
             final int _tmpId;
             _tmpId = _cursor.getInt(_cursorIndexOfId);
             _item.setId(_tmpId);
-            final int _tmpSalaryAmount;
-            _tmpSalaryAmount = _cursor.getInt(_cursorIndexOfSalaryAmount);
-            _item.setSalaryAmount(_tmpSalaryAmount);
-            final long _tmpUpdatedTime;
-            _tmpUpdatedTime = _cursor.getLong(_cursorIndexOfUpdatedTime);
-            _item.setUpdatedTime(_tmpUpdatedTime);
+            final int _tmpMonthId;
+            _tmpMonthId = _cursor.getInt(_cursorIndexOfMonthId);
+            _item.setMonthId(_tmpMonthId);
+            final int _tmpSpendAmount;
+            _tmpSpendAmount = _cursor.getInt(_cursorIndexOfSpendAmount);
+            _item.setSpendAmount(_tmpSpendAmount);
+            final long _tmpTime;
+            _tmpTime = _cursor.getLong(_cursorIndexOfTime);
+            _item.setTime(_tmpTime);
             _result.add(_item);
           }
           return _result;

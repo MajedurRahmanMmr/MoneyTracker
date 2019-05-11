@@ -1,4 +1,4 @@
-#Sat Feb 23 08:10:00 BDT 2019
-base.0=G\:\\MoneyTracker\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\6
+#Sat May 11 19:18:33 BDT 2019
+base.0=/Users/mmr/AndroidStudioProjects/MoneyTracker/app/build/intermediates/transforms/dexMerger/debug/6
 path.0=classes.dex
 renamed.0=classes.dex

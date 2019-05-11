@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:minWidth="300dp"
+    android:minWidth="400dp"
     android:orientation="vertical"
     android:paddingLeft="20dp"
     android:paddingTop="10dp"
@@ -19,16 +19,15 @@
         android:paddingRight="20dp"
         android:text="Please Provide Individual Amount"
         android:textAlignment="center"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:alpha=".8"
-        android:layout_marginBottom="5dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:alpha=".8"
         android:background="#97C9C9C9" />
 
     <EditText
@@ -38,41 +37,56 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/round_bg_gray"
         android:gravity="center"
-        android:hint="Shopping "
+        android:hint="Amount"
         android:inputType="number"
         android:maxLength="9"
         android:maxLines="1"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/food_amount"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/round_bg_gray"
-        android:gravity="center"
-        android:hint="Food"
-        android:inputType="number"
-        android:maxLength="9"
-        android:maxLines="1"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/shoppingTypeGroup"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/shoppingType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
 
 
-    <EditText
-        android:id="@+id/other_amount"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/round_bg_gray"
-        android:gravity="center"
-        android:hint="Other"
-        android:inputType="number"
-        android:maxLength="9"
-        android:maxLines="1"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold" />
+                android:text="Shopping"
+                android:textColor="@color/colorPrimary" />
+
+            <RadioButton
+                android:id="@+id/foodType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Food"
+                android:textColor="@color/colorPrimary" />
+
+            <RadioButton
+                android:id="@+id/otherType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+
+                android:text="Other"
+                android:textColor="@color/colorPrimary" />
+        </RadioGroup>
+
+    </LinearLayout>
 
 
     <LinearLayout

@@ -12,7 +12,7 @@ public class MonthlyDataRepository {
 
    public MonthlyDataRepository(Application application) {
         RoomDataBase db = RoomDataBase.getDatabase(application);
-        mWordDao = db.wordDao();
+        mWordDao = db.monthlyDataDAO();
     }
 
     LiveData<List<MonthlyData>> getAllWords() {

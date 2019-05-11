@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "G:\\MoneyTracker\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-h720dp-v13\\values-h720dp-v13.xml",
+            "outputFile": "/Users/mmr/AndroidStudioProjects/MoneyTracker/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-h720dp-v13/values-h720dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Majid\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-28.0.0.aar\\878f9558dc5149c5d2629384d3cdeebc\\res\\values-h720dp-v13\\values-h720dp-v13.xml",
+                    "source": "/Users/mmr/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/7e40b30bb9052fe11b353122afa3907e/res/values-h720dp-v13/values-h720dp-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
