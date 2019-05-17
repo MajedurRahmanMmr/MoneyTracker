@@ -1,5 +1,6 @@
 package com.example.moneytracker.Adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ import com.example.moneytracker.Activity.HistoryActivity;
 import com.example.moneytracker.Database.MonthlyData;
 import com.example.moneytracker.Database.RoomDataBase;
 import com.example.moneytracker.Database.Salary;
+import com.example.moneytracker.Database.SalaryMonth;
 import com.example.moneytracker.R;
 
 import java.util.Calendar;
@@ -55,6 +58,7 @@ public class MonthlyDataAdapter extends RecyclerView.Adapter<MonthlyDataAdapter.
 
         final int month = Calendar.getInstance().get(Calendar.MONTH);
 
+
         if (month == currentMonthData.getMonthId() - 1) {
             viewHolder.statusMonth.setText("Running");
             viewHolder.statusMonth.setTextColor(Color.parseColor("#FFE53935"));
@@ -75,17 +79,20 @@ public class MonthlyDataAdapter extends RecyclerView.Adapter<MonthlyDataAdapter.
         if (month >= currentMonthData.getMonthId() - 1) {
             if (salaries.size() != 0) {
                 viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                Salary salary = salaries.get(0);
 
-                if (salary != null && salary.getSalaryAmount() > 0) {
+                SalaryMonth monthlyDataByMonthId = database.salaryDAO().getAllMonthlyDataByMonthId(currentMonthData.getMonthId());
+
+
+                if (monthlyDataByMonthId != null && monthlyDataByMonthId.getSalaryAmount() > 0) {
                     try {
-                        int availableAmount = salary.getSalaryAmount() - currentMonthData.getMonthlySpend();
+                        int availableAmount = monthlyDataByMonthId.getSalaryAmount() - currentMonthData.getMonthlySpend();
                         int alreadySpend = currentMonthData.getMonthlySpend();
-                        int remaining = salary.getSalaryAmount() - alreadySpend;
+                        int remaining = monthlyDataByMonthId.getSalaryAmount() - alreadySpend;
 
-                        viewHolder.available.setText(String.format("%d", salary.getSalaryAmount()));
+                        viewHolder.available.setText(String.format("%d", monthlyDataByMonthId.getSalaryAmount()));
                         viewHolder.remaining.setText(String.format("%d", remaining));
                         viewHolder.alreadySpend.setText(String.format("%d", alreadySpend));
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -116,7 +123,103 @@ public class MonthlyDataAdapter extends RecyclerView.Adapter<MonthlyDataAdapter.
         });
 
 
+        viewHolder.cardViewMonth.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (month >= currentMonthData.getMonthId() - 1) {
+                    showSalaryDialog(currentMonthData);
+                } else {
+                    Toast.makeText(context, "You can change only running and already past month data!!", Toast.LENGTH_SHORT).show();
+                }
+
+
+                return false;
+            }
+        });
+
+
     }
+
+
+    private void showSalaryDialog(final MonthlyData currentMonthData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_layout_add_salary);
+        dialog.setCancelable(false);
+
+        TextView title = dialog.findViewById(R.id.text_title);
+
+        title.setText("Update Salary Amount");
+        dialog.show();
+        final EditText amount_salary = dialog.findViewById(R.id.salary_amount);
+
+        dialog.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String amount = amount_salary.getText().toString();
+
+                if (!amount.isEmpty()) {
+
+                    try {
+                        int actual_amount = Integer.parseInt(amount);
+                        final int month = currentMonthData.getMonthId();
+
+                        List<SalaryMonth> allMonthlySalaryData = database.salaryDAO().getAllMonthlySalaryData();
+
+                        int salaryValue = 0;
+                        for (SalaryMonth item : allMonthlySalaryData) {
+                            salaryValue = item.getSalaryAmount() + salaryValue;
+                        }
+
+                        if (salaryValue > 0) {
+                            SalaryMonth monthData = database.salaryDAO().getAllMonthlyDataByMonthId(month);
+                            if (monthData == null) {
+                                SalaryMonth salaryMonth = new SalaryMonth();
+                                salaryMonth.setMonthId(month);
+                                salaryMonth.setSalaryAmount(actual_amount);
+                                salaryMonth.setUpdatedTime(System.currentTimeMillis());
+                                database.salaryDAO().insertMonthlyData(salaryMonth);
+                            } else {
+                                monthData.setSalaryAmount(actual_amount);
+                                database.salaryDAO().insertMonthlyData(monthData);
+                            }
+                        } else {
+                            for (int i = 1; i <= 12; i++) {
+                                SalaryMonth salaryMonth = new SalaryMonth();
+                                salaryMonth.setMonthId(i);
+                                salaryMonth.setSalaryAmount(actual_amount);
+                                salaryMonth.setUpdatedTime(System.currentTimeMillis());
+                                database.salaryDAO().insertMonthlyData(salaryMonth);
+                            }
+                        }
+                        Salary salary = new Salary();
+                        salary.setSalaryAmount(actual_amount);
+                        database.salaryDAO().insertMonthlyData(salary);
+                        dialog.dismiss();
+                        notifyData();
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(context, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+
+                }
+
+
+            }
+        });
+
+
+        dialog.findViewById(R.id.cancel_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
 
 
     public void setData(List<MonthlyData> data) {

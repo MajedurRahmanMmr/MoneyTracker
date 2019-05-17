@@ -6,10 +6,8 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-import javax.xml.parsers.SAXParser;
 
-
-@Database(entities = {MonthlyData.class , Salary.class , Spend.class , DailySpendDM.class}, version = 5)
+@Database(entities = {MonthlyData.class, Salary.class, Spend.class, DailySpendDM.class, SalaryMonth.class}, version = 8)
 public abstract class RoomDataBase extends RoomDatabase {
 
     public abstract MonthlyDataDAO monthlyDataDAO();

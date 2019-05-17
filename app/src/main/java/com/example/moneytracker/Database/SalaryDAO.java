@@ -18,6 +18,10 @@ public interface SalaryDAO {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertMonthlyData(SalaryMonth data);
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllMonthlyData(ArrayList<Salary> data);
 
     @Query("select * from salary ")
@@ -27,6 +31,11 @@ public interface SalaryDAO {
     @Query("select * from salary ")
     List<Salary> getAllMonthlyData();
 
+    @Query("select * from salarymonth")
+    List<SalaryMonth> getAllMonthlySalaryData();
+
+    @Query("select * from salarymonth where monthId=:month")
+    SalaryMonth getAllMonthlyDataByMonthId(int month);
 
     @Query("select * from salary ")
     LiveData<List<Salary>> getAllMonthlyDataLive();

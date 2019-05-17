@@ -23,6 +23,7 @@ import com.example.moneytracker.Database.MonthlyData;
 import com.example.moneytracker.Database.MonthlyDataViewModel;
 import com.example.moneytracker.Database.RoomDataBase;
 import com.example.moneytracker.Database.Salary;
+import com.example.moneytracker.Database.SalaryMonth;
 import com.example.moneytracker.R;
 
 import java.text.DateFormat;
@@ -52,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
         List<MonthlyData> allMonthlyData = db.monthlyDataDAO().getAllMonthlyData();
 
-        if (allMonthlyData.size() == 0) {
+        List<SalaryMonth> allMonthlySalaryData = db.salaryDAO().getAllMonthlySalaryData();
+
+        if (allMonthlyData.size() == 0 && allMonthlySalaryData.size() == 0) {
             insertInitialData();
         }
 
@@ -145,7 +148,36 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         int actual_amount = Integer.parseInt(amount);
+                        final int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
 
+                        List<SalaryMonth> allMonthlySalaryData = db.salaryDAO().getAllMonthlySalaryData();
+
+                        int salaryValue = 0;
+                        for (SalaryMonth item : allMonthlySalaryData) {
+                            salaryValue = item.getSalaryAmount() + salaryValue;
+                        }
+
+                        if (salaryValue > 0) {
+                            SalaryMonth monthData = db.salaryDAO().getAllMonthlyDataByMonthId(month);
+                            if (monthData == null) {
+                                SalaryMonth salaryMonth = new SalaryMonth();
+                                salaryMonth.setMonthId(month);
+                                salaryMonth.setSalaryAmount(actual_amount);
+                                salaryMonth.setUpdatedTime(System.currentTimeMillis());
+                                db.salaryDAO().insertMonthlyData(salaryMonth);
+                            } else {
+                                monthData.setSalaryAmount(actual_amount);
+                                db.salaryDAO().insertMonthlyData(monthData);
+                            }
+                        } else {
+                            for (int i = 1; i <= 12; i++) {
+                                SalaryMonth salaryMonth = new SalaryMonth();
+                                salaryMonth.setMonthId(i);
+                                salaryMonth.setSalaryAmount(actual_amount);
+                                salaryMonth.setUpdatedTime(System.currentTimeMillis());
+                                db.salaryDAO().insertMonthlyData(salaryMonth);
+                            }
+                        }
                         Salary salary = new Salary();
                         salary.setSalaryAmount(actual_amount);
                         db.salaryDAO().insertMonthlyData(salary);
@@ -183,6 +215,13 @@ public class MainActivity extends AppCompatActivity {
             monthlyData.setMonthlySpend(0);
             monthlyData.setMonthName(formatMonth(i, Locale.US));
             data.add(monthlyData);
+
+
+            SalaryMonth salaryMonth = new SalaryMonth();
+            salaryMonth.setMonthId(i);
+            salaryMonth.setSalaryAmount(0);
+            salaryMonth.setUpdatedTime(System.currentTimeMillis());
+            db.salaryDAO().insertMonthlyData(salaryMonth);
 
         }
 
